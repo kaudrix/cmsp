@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kzin | Script Hub</title>
+<style>
+  /* Reset e base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    overflow-y: scroll;
+    transition: background 0.3s, color 0.3s;
+  }
+  :root {
+    --bg-color: #0e0e0e;
+    --text-color: #f0f0f0;
+    --primary-color: #00ccff;
+    --button-bg: #00ccff;
+    --button-text: #000;
+    --button-hover-bg: #00aacc;
+    --section-border: #2c2c2c;
+    --script-bg: #1e1e1e;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+  }
+  body.light {
+    --bg-color: #f9f9f9;
+    --text-color: #222;
+    --primary-color: #007acc;
+    --button-bg: #007acc;
+    --button-text: #fff;
+    --button-hover-bg: #005f99;
+    --section-border: #ccc;
+    --script-bg: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Header e nav fixa */
+  header {
+    background: var(--bg-color);
+    padding: 1rem 2rem;
+    text-align: center;
+    border-bottom: 2px solid var(--section-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rgbText 5s linear infinite;
+  }
+  @keyframes rgbText {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  nav a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.3s, color 0.3s;
+  }
+  nav a:hover {
+    background: var(--primary-color);
+    color: var(--button-text);
+  }
+
+  main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  @media(min-width: 900px) {
+    main {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  section {
+    border: 1px solid var(--section-border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem 2rem;
+    background: var(--bg-color);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+  }
+  .section-header img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+    border-radius: 8px;
+  }
+  .section-header img:hover {
+    transform: scale(1.05);
+  }
+  .section-header h2 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .script-box {
+    background: var(--script-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    position: relative;
+    margin-top: 1rem;
+    box-shadow: 0 2px 6px var(--shadow-color);
+    transition: box-shadow 0.3s;
+    color: var(--text-color);
+    font-family: monospace;
+    font-size: 1rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .script-box:hover {
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: 600;
+    user-select: none;
+  }
+  .copy-btn:hover {
+    background: var(--button-hover-bg);
+  }
+
+  /* Rodapé */
+  footer {
+    text-align: center;
+    padding: 1rem 2rem;
+    border-top: 2px solid var(--section-border);
+    margin-top: 3rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  /* Dark mode toggle */
+  .toggle-switch {
+    cursor: pointer;
+    background: var(--button-bg);
+    border-radius: 20px;
+    width: 50px;
+    height: 25px;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    background: var(--button-text);
+    top: 2px;
+    left: 2px;
+    transition: left 0.3s;
+  }
+  .toggle-switch.active {
+    background: var(--button-hover-bg);
+  }
+  .toggle-switch.active::after {
+    left: 27px;
+  }
+
+  /* Colapsar scripts */
+  .script-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+  }
+  .script-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .script-content.open {
+    max-height: 1000px; /* grande o suficiente para mostrar conteúdo */
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Kzin</h1>
+  <nav>
+    <a href="#tarefa">Tarefa</a>
+    <a href="#khan">Khan</a>
+    <a href="#speak">Speak</a>
+    <a href="#redacao">Redação</a>
+  </nav>
+  <div class="toggle-switch" id="darkToggle" title="Alternar modo escuro/claro" aria-label="Alternar modo escuro/claro"></div>
+</header>
+<main>
+  <section id="tarefa">
+    <div class="section-header">
+      <img src="https://i.ibb.co/JRfQw1q2/20250701-010840.png" alt="Tarefa Sp" />
+      <h2>Tarefa Sp | Sala Do Futuro</h2>
+    </div>
+
+    <div class="script-box">
+      <div class="script-header" onclick="toggleScript(this)">Script 1</div>
+      <div class="script-content">
+        <code>https://gabaritus.moonscripts.cloud/</code>
+        <button class="copy-btn" onclick="copyScript(this)">Copiar</button>
+      </div>
+    </div>
+
+    <div class="script-box">
+      <div class="script-header" onclick="toggleScript(this)">Script 2</div>
+      <div class="script-content">
+        <code>https://cenouritos.vercel.app/</code>
+        <button class="copy-btn" onclick="copyScript(this)">Copiar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="khan">
+    <div class="section-header">
+      <img src="https://i.ibb.co/Wpvdx02y/20250701-011016.png" alt="Khan Academy" />
+      <h2>Khan Academy</h2>
+    </div>
+    <div class="script-box">
+      <div class="script-header" onclick="toggleScript(this)">Script</div>
+      <div class="script-content">
+        <code>javascript:fetch("https://raw.githubusercontent.com/Snowxyrzk/Khan-Destroyer/refs/heads/main/SCRIPT.js").then(t=&gt;t.text()).then(eval);</code>
+        <button class="copy-btn" onclick="copyScript(this)">Copiar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="speak">
+    <div class="section-header">
+      <img src="https://i.ibb.co/C3RBZRZ2/20250701-010757.png" alt="Speak" />
+      <h2>Speak</h2>
+    </div>
+    <div class="script-box">
+      <div class="script-header" onclick="toggleScript(this)">Script</div>
+      <div class="script-content">
+        <code>javascript:fetch('https://res.cloudinary.com/dtp29k95n/raw/upload/v1750961477/book_dwju2r.js').then(r=&gt;r.text()).then(r=&gt;eval(r))</code>
+        <button class="copy-btn" onclick="copyScript(this)">Copiar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="redacao">
+    <div class="section-header">
+      <img src="https://i.ibb.co/cKn1dSBz/20250701-010920.png" alt="Redação Paulista" />
+      <h2>Redação Paulista</h2>
+    </div>
+    <div class="script-box">
+      <div class="script-header" onclick="toggleScript(this)">Link</div>
+      <div class="script-content">
+        <code>https://redacao.cupiditys.lol/</code>
+        <button class="copy-btn" onclick="copyScript(this)">Copiar</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © Kzin 2025 - <a href="https://github.com/kzin" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration:none;">GitHub</a> | <a href="https://instagram.com/kzin" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration:none;">Instagram</a>
+</footer>
+
+<script>
+  // Toggle dark/light mode
+  const toggle = document.getElementById('darkToggle');
+  const body = document.body;
+
+  toggle.addEventListener('click', () => {
+    body.classList.toggle('light');
+    toggle.classList.toggle('active');
+    // Salvar preferência local
+    if(body.classList.contains('light')) {
+      localStorage.setItem('theme', 'light');
+    } else {
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+
+  // Carregar preferencia
+  window.addEventListener('load', () => {
+    if(localStorage.getItem('theme') === 'light') {
+      body.classList.add('light');
+      toggle.classList.add('active');
+    }
+  });
+
+  // Função copiar texto
+  function copyScript(btn) {
+    const scriptBox = btn.parentElement;
+    const codeElement = scriptBox.querySelector('code');
+    if (codeElement) {
+      const text = codeElement.textContent.trim();
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = '✅';
+          setTimeout(() => btn.textContent = 'Copiar', 1500);
+        }).catch(() => {
+          fallbackCopy(text, btn);
+        });
+      } else {
+        fallbackCopy(text, btn);
+      }
+    }
+  }
+
+  function fallbackCopy(text, btn) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      btn.textContent = '✅';
+    } catch (err) {
+      console.error('Erro ao copiar:', err);
+    }
+    document.body.removeChild(textarea);
+    setTimeout(() => btn.textContent = 'Copiar', 1500);
+  }
+
+  // Toggle expand/collapse scripts
+  function toggleScript(header) {
+    const content = header.nextElementSibling;
+    if (content.classList.contains('open')) {
+      content.classList.remove('open');
+    } else {
+      content.classList.add('open');
+    }
+  }
+</script>
+</body>
+</html>
+
