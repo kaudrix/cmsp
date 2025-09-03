@@ -1,39 +1,127 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Kzin | Script Hub</title>
-<style>
-  /* Reset e base */
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: var(--bg-color);
-    color: var(--text-color);
-    overflow-y: scroll;
-    transition: background 0.3s, color 0.3s;
-  }
-  :root {
-    --bg-color: #0e0e0e;
-    --text-color: #f0f0f0;
-    --primary-color: #00ccff;
-    --button-bg: #00ccff;
-    --button-text: #000;
-    --button-hover-bg: #00aacc;
-    --section-border: #2c2c2c;
-    --script-bg: #1e1e1e;
-    --shadow-color: rgba(0, 0, 0, 0.5);
-  }
-  body.light {
-    --bg-color: #f9f9f9;
-    --text-color: #222;
-    --primary-color: #007acc;
-    --button-bg: #007acc;
-    --button-text: #fff;
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = 800;
+canvas.height = 400;
+
+// Parâmetros do jogador
+const player = {
+    x: 50,
+    y: canvas.height - 70,
+    width: 50,
+    height: 70,
+    speed: 5,
+    dx: 0,
+    dy: 0,
+    gravity: 0.8,
+    jumpPower: -15,
+    grounded: false
+};
+
+// Objetos do jogo
+const fruits = [
+    { x: 200, y: 320, width: 30, height: 30, collected: false },
+    { x: 400, y: 280, width: 30, height: 30, collected: false },
+    { x: 600, y: 240, width: 30, height: 30, collected: false }
+];
+
+const mushrooms = [
+    { x: 300, y: 300, width: 50, height: 50 },
+    { x: 500, y: 250, width: 50, height: 50 }
+];
+
+// Função de movimento do jogador
+function movePlayer() {
+    if (player.dy < 0) {
+        player.dy += player.gravity;
+    }
+    player.y += player.dy;
+
+    if (player.x + player.width > canvas.width || player.x < 0) {
+        player.dx = 0;
+    }
+
+    if (player.y + player.height > canvas.height) {
+        player.y = canvas.height - player.height;
+        player.dy = 0;
+        player.grounded = true;
+    } else {
+        player.grounded = false;
+    }
+}
+
+// Função de colisão com frutas
+function checkFruitCollision() {
+    fruits.forEach(fruit => {
+        if (
+            !fruit.collected &&
+            player.x < fruit.x + fruit.width &&
+            player.x + player.width > fruit.x &&
+            player.y < fruit.y + fruit.height &&
+            player.y + player.height > fruit.y
+        ) {
+            fruit.collected = true;
+            console.log("Fruta coletada!");
+        }
+    });
+}
+
+// Função de desenhar tudo no canvas
+function drawGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Desenha o jogador
+    ctx.fillStyle = "#00BFFF";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    // Desenha as frutas
+    fruits.forEach(fruit => {
+        if (!fruit.collected) {
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(fruit.x + fruit.width / 2, fruit.y + fruit.height / 2, 15, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    });
+
+    // Desenha os cogumelos
+    mushrooms.forEach(mushroom => {
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(mushroom.x + mushroom.width / 2, mushroom.y + mushroom.height / 2, 25, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    
+    // Move o jogador
+    movePlayer();
+    checkFruitCollision();
+}
+
+// Função para atualizar o jogo
+function updateGame() {
+    drawGame();
+    requestAnimationFrame(updateGame);
+}
+
+// Função de controle de teclas
+document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") {
+        player.dx = -player.speed;
+    } else if (e.key === "ArrowRight") {
+        player.dx = player.speed;
+    } else if (e.key === "ArrowUp" && player.grounded) {
+        player.dy = player.jumpPower;
+    }
+});
+
+document.addEventListener("keyup", function (e) {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        player.dx = 0;
+    }
+});
+
+// Inicializando o jogo
+updateGame();
     --button-hover-bg: #005f99;
     --section-border: #ccc;
     --script-bg: #e0e0e0;
