@@ -1,74 +1,227 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-canvas.width = 800;
-canvas.height = 400;
-
-// Parâmetros do jogador
-const player = {
-    x: 50,
-    y: canvas.height - 70,
-    width: 50,
-    height: 70,
-    speed: 5,
-    dx: 0,
-    dy: 0,
-    gravity: 0.8,
-    jumpPower: -15,
-    grounded: false
-};
-
-// Objetos do jogo
-const fruits = [
-    { x: 200, y: 320, width: 30, height: 30, collected: false },
-    { x: 400, y: 280, width: 30, height: 30, collected: false },
-    { x: 600, y: 240, width: 30, height: 30, collected: false }
-];
-
-const mushrooms = [
-    { x: 300, y: 300, width: 50, height: 50 },
-    { x: 500, y: 250, width: 50, height: 50 }
-];
-
-// Função de movimento do jogador
-function movePlayer() {
-    if (player.dy < 0) {
-        player.dy += player.gravity;
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopee Teste</title>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background-color: #f5f5f5;
     }
-    player.y += player.dy;
-
-    if (player.x + player.width > canvas.width || player.x < 0) {
-        player.dx = 0;
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #ff5722;
+        color: white;
+        padding: 15px 30px;
+    }
+    header h1 { margin: 0; cursor: pointer; }
+    nav { display: flex; gap: 10px; }
+    nav button {
+        padding: 5px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: white;
+        color: #ff5722;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    main { padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+    .produto {
+        background-color: white;
+        width: 220px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        overflow: hidden;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    .produto:hover { transform: translateY(-5px); }
+    .produto img { width: 100%; height: 180px; object-fit: cover; }
+    .produto h3 { margin: 10px 0; }
+    .produto p { margin: 5px 0; font-weight: bold; color: #ff5722; }
+    .produto button {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #ff5722;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
     }
 
-    if (player.y + player.height > canvas.height) {
-        player.y = canvas.height - player.height;
-        player.dy = 0;
-        player.grounded = true;
-    } else {
-        player.grounded = false;
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top:0; left:0; right:0; bottom:0;
+        background: rgba(0,0,0,0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
     }
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        width: 300px;
+        text-align: center;
+    }
+    .modal-content input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    .modal-content button {
+        padding: 10px 20px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #ff5722;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    /* Carrinho */
+    #carrinho {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #ff5722;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1 onclick="location.reload()">Shopee Teste</h1>
+    <nav>
+        <button onclick="abrirLogin()">Login</button>
+        <button onclick="abrirRegistro()">Registrar</button>
+    </nav>
+</header>
+
+<main id="produtos">
+    <div class="produto">
+        <img src="https://via.placeholder.com/220x180.png?text=Camisa+1" alt="Camisa">
+        <h3>Camisa Estilosa</h3>
+        <p>R$ 50,00</p>
+        <button onclick="comprar('Camisa Estilosa',50)">Comprar</button>
+    </div>
+    <div class="produto">
+        <img src="https://via.placeholder.com/220x180.png?text=Pipa" alt="Pipa">
+        <h3>Pipa Colorida</h3>
+        <p>R$ 15,00</p>
+        <button onclick="comprar('Pipa Colorida',15)">Comprar</button>
+    </div>
+</main>
+
+<div id="carrinho" onclick="verCarrinho()">Carrinho 🛒 (0)</div>
+
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+    <div class="modal-content">
+        <h2>Login</h2>
+        <input type="text" id="loginUser" placeholder="Usuário">
+        <input type="password" id="loginPass" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+        <button onclick="fecharLogin()">Fechar</button>
+    </div>
+</div>
+
+<!-- Registro Modal -->
+<div class="modal" id="registroModal">
+    <div class="modal-content">
+        <h2>Registrar</h2>
+        <input type="text" id="regUser" placeholder="Usuário">
+        <input type="password" id="regPass" placeholder="Senha">
+        <button onclick="registrar()">Registrar</button>
+        <button onclick="fecharRegistro()">Fechar</button>
+    </div>
+</div>
+
+<script>
+// Contas e carrinho no localStorage
+let contas = JSON.parse(localStorage.getItem('contas')) || [{usuario:'kzin', senha:'281516', admin:true}];
+let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || null;
+let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+function atualizarCarrinho(){
+    document.getElementById('carrinho').innerText = `Carrinho 🛒 (${carrinho.length})`;
 }
 
-// Função de colisão com frutas
-function checkFruitCollision() {
-    fruits.forEach(fruit => {
-        if (
-            !fruit.collected &&
-            player.x < fruit.x + fruit.width &&
-            player.x + player.width > fruit.x &&
-            player.y < fruit.y + fruit.height &&
-            player.y + player.height > fruit.y
-        ) {
-            fruit.collected = true;
-            console.log("Fruta coletada!");
-        }
+// Abrir e fechar modais
+function abrirLogin(){ document.getElementById('loginModal').style.display='flex'; }
+function fecharLogin(){ document.getElementById('loginModal').style.display='none'; }
+function abrirRegistro(){ document.getElementById('registroModal').style.display='flex'; }
+function fecharRegistro(){ document.getElementById('registroModal').style.display='none'; }
+
+// Registro de contas
+function registrar(){
+    let user = document.getElementById('regUser').value.trim();
+    let pass = document.getElementById('regPass').value.trim();
+    if(!user || !pass){ alert('Preencha todos os campos!'); return; }
+    if(contas.find(c=>c.usuario===user)){ alert('Usuário já existe!'); return; }
+    contas.push({usuario:user, senha:pass, admin:false});
+    localStorage.setItem('contas', JSON.stringify(contas));
+    alert('Conta registrada com sucesso!');
+    fecharRegistro();
+}
+
+// Login
+function login(){
+    let user = document.getElementById('loginUser').value.trim();
+    let pass = document.getElementById('loginPass').value.trim();
+    let conta = contas.find(c=>c.usuario===user && c.senha===pass);
+    if(conta){
+        usuarioLogado = conta;
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+        alert(`Bem-vindo(a), ${usuarioLogado.usuario}!`);
+        fecharLogin();
+    } else alert('Usuário ou senha incorretos!');
+}
+
+// Comprar produtos
+function comprar(produto, preco){
+    if(!usuarioLogado){ alert('Faça login para comprar!'); abrirLogin(); return; }
+    carrinho.push({produto, preco});
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    atualizarCarrinho();
+    alert(`Produto "${produto}" adicionado ao carrinho!`);
+}
+
+// Ver carrinho
+function verCarrinho(){
+    if(carrinho.length===0){ alert('Carrinho vazio!'); return; }
+    let msg = 'Seu carrinho:\n\n';
+    let total = 0;
+    carrinho.forEach((item, i)=>{
+        msg += `${i+1}. ${item.produto} - R$ ${item.preco}\n`;
+        total += item.preco;
     });
+    msg += `\nTotal: R$ ${total}`;
+    alert(msg);
 }
 
-// Função de desenhar tudo no canvas
-function drawGame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+// Atualiza carrinho ao iniciar
+atualizarCarrinho();
+</script>
+
+</body>
+</html>
 
     // Desenha o jogador
     ctx.fillStyle = "#00BFFF";
