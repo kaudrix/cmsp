@@ -1,39 +1,231 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shopee Teste</title>
-<style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        margin: 0;
-        background-color: #f5f5f5;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Página de Venda — Oferta Irresistível</title>
+  <meta name="description" content="Landing page de venda chamativa — destaque, provas sociais, CTA e formulário de compra." />
+  <style>
+    /* Base e reset rápido */
+    :root{
+      --bg1: #0f1724;
+      --bg2: #081028;
+      --accent: #ff5a5f; /* coral */
+      --accent-2: #ffd166; /* amarelo */
+      --glass: rgba(255,255,255,0.06);
+      --card: rgba(255,255,255,0.03);
+      --radius:18px;
+      --success: #22c55e;
+      color-scheme: dark;
     }
-    header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #ff5722;
-        color: white;
-        padding: 15px 30px;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:radial-gradient(1200px 600px at 10% 10%, rgba(255,90,95,0.06), transparent), linear-gradient(180deg,var(--bg1),var(--bg2)); color:#eef6ff; padding:18px; -webkit-font-smoothing:antialiased;
     }
-    header h1 { margin: 0; cursor: pointer; }
-    nav { display: flex; gap: 10px; }
-    nav button {
-        padding: 5px 15px;
-        border: none;
-        border-radius: 5px;
-        background-color: white;
-        color: #ff5722;
-        font-weight: bold;
-        cursor: pointer;
+    a{color:inherit;text-decoration:none}
+
+    /* Container */
+    .wrap{max-width:1200px;margin:0 auto}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px 8px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff8fa3);display:flex;align-items:center;justify-content:center;font-weight:900;color:#111}
+    nav{display:flex;gap:14px}
+    nav a{padding:8px 12px;border-radius:10px;font-weight:700;color:rgba(255,255,255,0.85)}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:center;padding:28px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);box-shadow:0 12px 40px rgba(2,6,23,0.6);margin-top:12px}
+    .kicker{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;font-weight:800;font-size:13px}
+    .hero h1{font-size:34px;margin:10px 0;line-height:1.05}
+    .hero p{color:rgba(255,255,255,0.8);margin:0 0 12px}
+    .price-badge{display:inline-flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(0,0,0,0.25), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.04);font-weight:800}
+
+    /* CTA */
+    .ctas{display:flex;gap:12px;margin-top:12px}
+    .btn{padding:14px 18px;border-radius:12px;font-weight:800;border:none;cursor:pointer}
+    .btn.buy{background:linear-gradient(90deg,var(--accent),#ff7b7f);color:#111}
+    .btn.trial{background:transparent;border:2px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.95)}
+
+    /* Right card */
+    .card-right{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+    .feature-list{display:grid;gap:10px;margin-top:12px}
+    .feature-item{display:flex;gap:12px;align-items:center}
+    .dot{width:12px;height:12px;border-radius:50%;background:var(--accent)}
+
+    /* Trust section */
+    .trust{display:flex;gap:12px;align-items:center;margin-top:18px}
+    .trust img{height:36px;opacity:0.9}
+
+    /* Highlights */
+    .highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .highlight{padding:16px;border-radius:12px;background:var(--card);border:1px solid rgba(255,255,255,0.02);text-align:center}
+    .highlight h3{margin:6px 0}
+
+    /* Testimonials */
+    .testimonials{margin-top:22px;display:flex;gap:12px;overflow:auto}
+    .testi{min-width:260px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.03)}
+
+    /* Footer CTA sticky */
+    .sticky-cta{position:fixed;right:18px;bottom:18px;background:linear-gradient(90deg,var(--accent),#ff9a9e);padding:12px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.4);display:flex;gap:12px;align-items:center}
+
+    /* Form */
+    .buy-form{display:grid;gap:10px}
+    input,select{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+
+    /* Small screens */
+    @media (max-width:980px){ .hero{grid-template-columns:1fr} .highlights{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:560px){ nav{display:none} .hero h1{font-size:26px} .highlights{grid-template-columns:1fr} }
+
+    /* Micro animations */
+    .pulse{animation:pulse 2s infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+    .badge-pop{animation:pop .6s ease}
+    @keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">SALE</div>
+        <div>
+          <div style="font-weight:900">SuperOferta</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.7)">Vendas por tempo limitado</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#features">Recursos</a>
+        <a href="#depoimentos">Depoimentos</a>
+        <a href="#comprar">Comprar</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <span class="kicker">-50% por tempo limitado</span>
+        <h1>Transforme seu <span style="background:linear-gradient(90deg,#ffefba,#ffd166);-webkit-background-clip:text;color:transparent">negócio</span> em 30 dias — sem complicação</h1>
+        <p>Produto digital com métodos testados + suporte — entregue em menos de 24h. Garanta acesso vitalício e atualizações grátis.</p>
+
+        <div class="price-badge badge-pop">R$97 <span style="font-size:13px;color:rgba(255,255,255,0.8);font-weight:600">(antes R$197)</span></div>
+
+        <div class="ctas">
+          <button class="btn buy pulse" onclick="buyNow()">Comprar Agora</button>
+          <button class="btn trial" onclick="openForm()">Experimentar Grátis</button>
+        </div>
+
+        <div class="trust">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Bitmap_Logo.png" alt="Parceiro 1"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Bitmap_Logo.png" alt="Parceiro 2"/>
+          <div style="margin-left:auto;color:rgba(255,255,255,0.8);font-weight:800">Mais de <span style="color:var(--accent-2)">2.300</span> clientes</div>
+        </div>
+
+        <div class="highlights">
+          <div class="highlight">
+            <div style="font-size:22px;font-weight:900">Entrega Imediata</div>
+            <div class="muted">Acesse assim que pagar</div>
+          </div>
+          <div class="highlight">
+            <div style="font-size:22px;font-weight:900">Suporte 24/7</div>
+            <div class="muted">Ajuda rápida e prática</div>
+          </div>
+          <div class="highlight">
+            <div style="font-size:22px;font-weight:900">Garantia 14 dias</div>
+            <div class="muted">Reembolso total se não gostar</div>
+          </div>
+        </div>
+
+        <div id="depoimentos" class="testimonials">
+          <div class="testi">"Melhorei minhas vendas em 3x"<div class="muted">— João, RJ</div></div>
+          <div class="testi">"Conteúdo objetivo e aplicável"<div class="muted">— Mariana, SP</div></div>
+          <div class="testi">"Suporte impecável"<div class="muted">— Carlos, MG</div></div>
+        </div>
+      </div>
+
+      <aside class="card-right">
+        <h3 style="margin:0 0 8px">Oferta Especial</h3>
+        <div style="font-size:28px;font-weight:900">R$97 <span style="font-size:14px;color:rgba(255,255,255,0.8);font-weight:700">(pagamento único)</span></div>
+        <div class="muted" style="margin-top:8px">+ Bônus: Checklist, Templates e Grupo VIP</div>
+
+        <div style="margin-top:12px">
+          <form id="buyForm" class="buy-form">
+            <input type="text" id="buyerName" placeholder="Seu nome" required />
+            <input type="email" id="buyerEmail" placeholder="Seu e-mail" required />
+            <select id="paymentMethod"><option>Cartão</option><option>Pix</option><option>Boleto</option></select>
+            <button type="button" class="btn buy" onclick="processPurchase()">Finalizar Compra</button>
+            <div style="margin-top:8px;font-size:13px;color:rgba(255,255,255,0.8)">Pagamento seguro • Criptografia SSL</div>
+          </form>
+        </div>
+
+        <div style="margin-top:12px;font-size:13px;color:rgba(255,255,255,0.85)">
+          <strong>Vagas Limitadas</strong>
+          <div id="countdown" style="margin-top:6px;font-weight:900">00:00:00</div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="features" style="margin-top:22px">
+      <h2>O que você recebe</h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px">
+        <div class="card">Curso passo-a-passo + 10 templates</div>
+        <div class="card">Aulas gravadas + atualizações</div>
+        <div class="card">Grupo VIP e suporte ao vivo</div>
+      </div>
+    </section>
+
+    <section id="comprar" style="margin-top:22px">
+      <h2>Garantia</h2>
+      <div class="card" style="margin-top:12px">Teste por 14 dias. Se não gostar, devolvemos 100% do seu dinheiro. Sem perguntas.</div>
+    </section>
+
+    <footer style="margin:28px 0 80px 0;color:rgba(255,255,255,0.7)">© 2025 SuperOferta • Todos os direitos reservados</footer>
+  </div>
+
+  <div class="sticky-cta" onclick="buyNow()">
+    <div style="font-weight:900">Comprar por R$97</div>
+    <button class="btn" style="background:rgba(0,0,0,0.2);padding:8px 12px;border-radius:10px">Ir para compra</button>
+  </div>
+
+  <script>
+    // Countdown simples (ex: 48 horas a partir do carregamento)
+    (function(){
+      const end = Date.now() + 48*60*60*1000;
+      const el = document.getElementById('countdown');
+      function tick(){
+        const now = Date.now();
+        let diff = Math.max(0, end - now);
+        const hrs = String(Math.floor(diff/36e5)).padStart(2,'0');
+        const mins = String(Math.floor(diff%36e5/6e4)).padStart(2,'0');
+        const secs = String(Math.floor(diff%6e4/1000)).padStart(2,'0');
+        el.textContent = `${hrs}:${mins}:${secs}`;
+        if(diff>0) requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+
+    function openForm(){
+      document.getElementById('buyerName').scrollIntoView({behavior:'smooth'});
+      document.getElementById('buyerName').focus();
     }
-    main { padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-    .produto {
-        background-color: white;
-        width: 220px;
-        border-radius: 15px;
+
+    function buyNow(){
+      // foco no formulário (simulação)
+      openForm();
+      // importante: TODO integrar com gateway real
+    }
+
+    function processPurchase(){
+      const name = document.getElementById('buyerName').value.trim();
+      const email = document.getElementById('buyerEmail').value.trim();
+      if(!name || !email){ alert('Preencha nome e e-mail para continuar'); return; }
+      // Simula checkout
+      alert('Compra simulada: obrigado ' + name + '! Um e-mail será enviado para ' + email);
+      // Aqui você integraria com API de pagamentos e redirecionaria para obrigado
+    }
+  </script>
+</body>
+</html>
         box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         overflow: hidden;
         text-align: center;
